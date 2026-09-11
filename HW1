@@ -1,0 +1,45 @@
+void main() {
+  var d1 = "31.12.2025"; 
+  var d2 = "28.02.2025"; 
+  var d3 = "28.02.2024"; 
+  var d4 = "28.02.2100"; 
+
+  List<String> dates = [d1, d2, d3, d4];
+
+  for (String date in dates) {
+    var parts = date.split('.');
+    int day = int.parse(parts[0]);
+    int month = int.parse(parts[1]);
+    int year = int.parse(parts[2]);
+
+    int maxDays = 31; 
+    
+    if (month == 4 || month == 6 || month == 9 || month == 11) {
+      maxDays = 30;
+    } else if (month == 2) {
+      bool isLeapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+      if (isLeapYear) {
+        maxDays = 29;
+      } else {
+        maxDays = 28;
+      }
+    }
+
+    day++;
+
+    if (day > maxDays) {
+      day = 1;
+      month++;
+      
+      if (month > 12) {
+        month = 1;
+        year++;
+      }
+    }
+
+    String nextDay = day.toString().padLeft(2, '0');
+    String nextMonth = month.toString().padLeft(2, '0');
+
+    print('$date -> $nextDay.$nextMonth.$year');
+  }
+}
