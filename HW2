@@ -1,0 +1,74 @@
+void main() {
+  String userName = "Abosya";
+  double accountBalance = 50000.0;
+
+  checkBalance(name: userName, balance: accountBalance);
+  accountBalance = deposit(currentBalance: accountBalance, amount: 15000.0);
+  accountBalance = deposit(currentBalance: accountBalance);
+
+  accountBalance = withdraw(
+    name: userName,
+    currentBalance: accountBalance,
+    amount: 10000.0,
+    pinCode: 1234,
+  );
+
+  accountBalance = withdraw(
+    name: userName,
+    currentBalance: accountBalance,
+    amount: 5000.0,
+    pinCode: 9999,
+  );
+
+  accountBalance = withdraw(
+    name: userName,
+    currentBalance: accountBalance,
+    amount: 100000.0,
+    pinCode: 1234,
+  );
+}
+
+void checkBalance({required String name, required double balance}) =>
+    print('\n--- Welcome, $name ---\nCurrent Available Balance: $balance ₸\n');
+
+double deposit({required double currentBalance, double? amount}) {
+  double safeAmount = amount ?? 0.0;
+  double updatedBalance = currentBalance + safeAmount;
+
+  print('--- Deposit Processed ---');
+  print('Deposited: $safeAmount ₸');
+  print('New Balance: $updatedBalance ₸\n');
+
+  return updatedBalance;
+}
+
+double withdraw({
+  required String name,
+  required double currentBalance,
+  double? amount,
+  int? pinCode,
+}) {
+  print('--- Withdrawal Request ($name) ---');
+
+  int safePin = pinCode ?? 0000;
+  if (safePin != 1234) {
+    print('Error: Incorrect PIN. Transaction Declined.');
+    print('Balance remains: $currentBalance ₸\n');
+    return currentBalance;
+  }
+
+  double safeAmount = amount ?? 0.0;
+
+  if (safeAmount > currentBalance) {
+    print('Error: Insufficient funds. Transaction Declined.');
+    print('Requested: $safeAmount ₸ | Available: $currentBalance ₸\n');
+    return currentBalance;
+  }
+
+  double updatedBalance = currentBalance - safeAmount;
+  print('Transaction Approved.');
+  print('Withdrawn: $safeAmount ₸');
+  print('New Balance: $updatedBalance ₸\n');
+
+  return updatedBalance;
+}
