@@ -3,7 +3,7 @@ void main() {
   double accountBalance = 50000.0;
 
   checkBalance(name: userName, balance: accountBalance);
-  accountBalance = deposit(currentBalance: accountBalance, amount: 15000.0);
+  accountBalance = deposit(currentBalance: accountBalance, amount: 15000.0); 
   accountBalance = deposit(currentBalance: accountBalance);
 
   accountBalance = withdraw(
