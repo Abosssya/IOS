@@ -1,0 +1,41 @@
+void main() {
+  processOrder(
+    orderId: 'ORD-001', 
+    itemPrice: 5000.0
+  );
+
+  processOrder(
+    orderId: 'ORD-002',
+    itemPrice: 10000.0,
+    promoCode: 'SAVE10'
+  );
+  
+  processOrder(
+    orderId: 'ORD-003',
+    itemPrice: 3000.0,
+    deliveryFee: 0.0
+  );
+}
+
+double processOrder({
+  required String orderId,
+  required double itemPrice,
+  String? promoCode,
+  double? deliveryFee
+}) {
+  double discount = (promoCode == 'SAVE10') ? (itemPrice * 0.1) : 0.0;
+  double finaldeliveryFee = deliveryFee ?? 500.0;
+  double finalTotal = itemPrice - discount + finaldeliveryFee;
+  
+  print('--- Order Summary ($orderId) ---');
+  print('--- Item Price ($itemPrice) ---');
+  
+  if (discount > 0) {
+    print('Discount -($discount)');
+  }
+   
+  print('Delivery Fee: ($finaldeliveryFee)');
+  print('Total Sum : ($finalTotal)\n');
+  
+  return finalTotal;
+}
