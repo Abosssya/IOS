@@ -1,0 +1,52 @@
+class Book{
+  String title;
+  String author;
+  double price;
+  bool isBorrowed;
+
+  Book({
+    required this.title,
+    required this.author,
+    required this.price,
+    this.isBorrowed = false,
+  });
+}
+
+class Library{
+  List<Book> _books = [];
+  void AddBook(Book book) {
+    _books.add(book);
+  }
+
+  List<Book> getAvailableBooks() {
+    return _books.where((book) => book.isBorrowed == false).toList();
+  }
+
+  double getTotalValue() {
+    return _books.fold(0.0, (sum,book) => sum + book.price);
+  }
+}
+
+void main() {
+  Library mylibrary = Library();
+
+  Book book1 = Book(title: "Corporate Finance", author: "Ross", price: 15000.0);
+  Book book2 = Book(title: "Macroeconomics", author: "Mankiw", price: 12000.0, isBorrowed: true);
+  Book book3 = Book(title: "Equity Valuation", author: "Pinto", price: 18000.0);
+  Book book4 = Book(title: "Financial Reporting", author: "Robinson", price: 10000.0);
+
+  mylibrary.AddBook(book1);
+  mylibrary.AddBook(book2);
+  mylibrary.AddBook(book3);
+  mylibrary.AddBook(book4);
+
+  print('--- Available Books in Library ---');
+  List<Book> availableBooks = mylibrary.getAvailableBooks();
+  for (Book b in availableBooks) {
+    print('${b.title} by ${b.author} (Price: ${b.price} tg)');
+  }
+
+  double totalValue = mylibrary.getTotalValue();
+  print('\n--- Total Asset Value ---');
+  print('Total Collection Value: $totalValue tg');
+}
