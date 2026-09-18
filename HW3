@@ -1,0 +1,125 @@
+abstract class MediaItem {
+  String id;
+  String title;
+  double price;
+
+  MediaItem({
+    required this.id,
+    required this.title,
+    required this.price,
+  });
+
+  String getDetails();
+}
+
+mixin Downloadable {
+  void download(String title){
+    print('>>> Downloading "$title"...');
+  }
+}
+
+class Audiobook extends MediaItem with Downloadable {
+  double durationHours;
+  String narrator;
+
+  Audiobook({
+    required String id,
+    required String title,
+    required double price,
+    required this.durationHours,
+    required this.narrator,
+  }) : super(id:id, title:title, price:price);
+  @override 
+  String getDetails() {
+    return 'Audiobook: $title by $narrator ($durationHours hrs) | $price tg';
+  }
+} 
+
+class EBook extends MediaItem with Downloadable {
+  double fileSizeMB;
+  String author;
+
+  EBook({
+    required String id,
+    required String title,
+    required double price,
+    required this.fileSizeMB,
+    required this.author,
+  }) : super(id:id,title:title,price:price);
+
+  @override
+  String getDetails() {
+    return 'EBook: $title by $author ($fileSizeMB MB) | $price tg';
+  }
+}
+
+class ShoppingCart {
+  List<MediaItem> _items = [];
+
+  void addItem(MediaItem item) {
+    _items.add(item);
+  }
+
+  double calculateTotalWithTax([double taxRate = 0.12]) {
+    double subtotal = _items.fold(0.0, (sum,item)=>sum+item.price);
+    return subtotal + (subtotal*taxRate);
+  }
+
+  List<MediaItem> filterbyMaxPrice (double MaxPrice) {
+    return _items.where((item)=> item.price <= MaxPrice).toList();
+  }
+
+void printReceipt() {
+  print('\n--- Final Receipt ---');
+  for (MediaItem item in _items) {
+    print(item.getDetails());
+
+    if (item is Downloadable) {
+      (item as Downloadable).download(item.title);
+    }
+    print('');
+  }
+  print('---------------------------');
+  print('Total (incl. 12% VAT): ${calculateTotalWithTax()} tg\n');
+}
+}
+
+void main() {
+  ShoppingCart cart = ShoppingCart();
+
+  EBook book1 = EBook(
+    id: 'EB-001', 
+    title: 'Financial Modeling', 
+    price: 8000.0, 
+    fileSizeMB: 15.5, 
+    author: 'Simon Benninga'
+  );
+
+  Audiobook audio1 = Audiobook(
+    id: 'AB-001', 
+    title: 'The Intelligent Investor', 
+    price: 15000.0, 
+    durationHours: 17.5, 
+    narrator: 'Bill McGowan'
+  );
+
+  EBook book2 = EBook(
+    id: 'EB-002', 
+    title: 'Macroeconomics', 
+    price: 5000.0, 
+    fileSizeMB: 8.0, 
+    author: 'Gregory Mankiw'
+  );
+
+  cart.addItem(book1);
+  cart.addItem(audio1);
+  cart.addItem(book2);
+
+  cart.printReceipt();
+
+  print('--- Budget Filter (Max 10000 tg) ---');
+  List<MediaItem> affordableitems = cart.filterbyMaxPrice(10000.0);
+  for (MediaItem item in affordableitems) {
+    print('- ${item.title} (${item.price} tg)');
+  }
+}
