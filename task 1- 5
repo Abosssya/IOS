@@ -1,0 +1,62 @@
+// Task 1 
+void main() {
+  for (int i =1;i<=10;i++) {
+    for (int j=1;j<=10;j++) {
+      print('$i * $j = ${i*j}');
+    }
+  }
+}
+
+// Task 2
+
+
+// Task 3
+void main() {
+  String text  = 'flutter mobile development';
+  int vowelCount = 0;
+  String textlower = text.toLowerCase();
+  
+  for (int i=0; i<textlower.length;i++) {
+    String char = textlower[i];
+    if (char == 'a' || char == 'e' || char == 'i' || char == 'o' || char == 'u') {
+      vowelCount++;
+    }
+  }
+  print('"$text" -> $vowelCount');
+}
+
+// Task 4
+void main() {
+  List<int> numbers = [14, 88, 3, 42, 99, 12, 67];
+  
+  int min = numbers[0];
+  int max = numbers[0];
+  
+  for (int i = 0;i<numbers.length;i++) {
+    if (numbers[i]>max) {
+      max = numbers[i];
+    }
+    if (numbers[i]< min) {
+      min = numbers[i];
+    }
+  }
+  print('List $numbers -> max: $max, min: $min');
+}
+
+// Task 5
+void main() {
+  int number = 6;
+  bool isPrime =true;
+  
+  for (int i=2; i<number;i++) {
+    if (number % i  == 0) {
+      isPrime = false;
+      break;
+    }
+  }
+  if (isPrime) {
+    print('$number -> prime number');
+  } else {
+    print('$number -> not prime number');
+  }
+}
