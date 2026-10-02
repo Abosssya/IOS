@@ -1,0 +1,203 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const ECommerceApp());
+}
+
+class ECommerceApp extends StatelessWidget {
+  const ECommerceApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ProductDetailScreen(),
+    );
+  }
+}
+
+class ProductDetailScreen extends StatefulWidget {
+  const ProductDetailScreen({super.key});
+
+  @override
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  bool isBookmarked = false;
+
+  void toggleBookmark() {
+    setState(() {
+      isBookmarked = !isBookmarked;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("Item Details"),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        foregroundColor: Colors.black,
+      ),
+      body: Column(
+        children: [
+          // 1. The Scrollable Content Area (Prevents RenderFlex Overflow)
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  // 2. STACK: Cover Image & Floating Bookmark Badge
+                  Stack(
+                    children: [
+                      Container(
+                        height: 300,
+                        width: double.infinity,
+                        color: Colors.brown[50],
+                        child: const Icon(Icons.cookie, size: 100, color: Colors.brown),
+                      ),
+                      Positioned(
+                        top: 15,
+                        right: 15,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: IconButton(
+                            icon: Icon(
+                              isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                              color: isBookmarked ? Colors.amber : Colors.grey,
+                            ),
+                            onPressed: toggleBookmark,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 3. ROW: Product Title & Price Alignment
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Expanded(
+                              child: Text(
+                                "AO «Bayan Sulu» Assorted Premium",
+                                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              "2,500 ₸",
+                              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.green),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+
+                        // ROW: Star Rating
+                        Row(
+                          children: const [
+                            Icon(Icons.star, color: Colors.amber, size: 20),
+                            Icon(Icons.star, color: Colors.amber, size: 20),
+                            Icon(Icons.star, color: Colors.amber, size: 20),
+                            Icon(Icons.star, color: Colors.amber, size: 20),
+                            Icon(Icons.star_half, color: Colors.amber, size: 20),
+                            SizedBox(width: 8),
+                            Text("4.8 (120 reviews)", style: TextStyle(color: Colors.grey)),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        // 4. WRAP: Dynamic Category Badges
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          children: [
+                            _buildBadge("Confectionery"),
+                            _buildBadge("Premium Cocoa"),
+                            _buildBadge("Made in Kazakhstan"),
+                            _buildBadge("Bestseller"),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        const Text(
+                          "Description",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          "Experience the finest quality chocolate crafted by AO «Bayan Sulu». This premium assortment delivers a rich, authentic taste that represents decades of confectionery excellence. Perfect for gifting or personal enjoyment.",
+                          style: TextStyle(fontSize: 16, height: 1.5, color: Colors.black87),
+                        ),
+                        const SizedBox(height: 40),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // 5. STICKY ACTION BAR: Bottom Add to Cart Button
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -5)),
+              ],
+            ),
+            child: SafeArea(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueAccent,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: const Text(
+                        "Add to Cart",
+                        style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Helper function to keep the Wrap widget code clean
+  Widget _buildBadge(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.blue.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
