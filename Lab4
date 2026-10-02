@@ -1,0 +1,116 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const ProfileApp());
+}
+
+class ProfileApp extends StatelessWidget {
+  const ProfileApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ProfileCard(),
+    );
+  }
+}
+
+class ProfileCard extends StatefulWidget{
+  const ProfileCard ({super.key});
+
+  @override
+  State<ProfileCard> createState() => _ProfileCardState();
+}
+
+class _ProfileCardState extends State<ProfileCard> {
+  bool isFollowing = false;
+  bool isLiked = false;
+  int likesCount = 0;
+
+  void toggleFollow(){
+    setState(() {
+      isFollowing = !isFollowing;
+    });
+  }
+  void toggleLike(){
+    setState((){
+      if (isLiked==true) {
+        likesCount--;
+        isLiked=false;
+      } else {
+        likesCount++;
+        isLiked=true;
+      }
+    });
+  }
+
+  void resetProfile() {
+    setState(() {
+      isFollowing=false;
+      isLiked=false;
+      likesCount = 0;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Profile Card"),
+        centerTitle:true,
+      ),
+      body:Center(
+        child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children : [
+            const CircleAvatar(
+              radius:50,
+              backgroundColor: Colors.blueAccent,
+              child: Icon(Icons.person,size:50,color:Colors.white),
+            ),
+            const SizedBox(height: 20,),
+            const Text("Abylay",style:TextStyle(fontSize:24,fontWeight: FontWeight.bold)),
+            const Text("Finance and Accountant",style:TextStyle(fontSize: 16, color:Colors.grey)),
+            const SizedBox(height: 30),
+
+            ElevatedButton(
+              onPressed:toggleFollow,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isFollowing ? Colors.grey : Colors.blue,
+              ),
+              child:Text(
+                isFollowing ? "Following" : "Follow",
+                style: const TextStyle(color:Colors.white),
+              ),
+            ),
+            const SizedBox(height: 15),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: toggleLike,
+                icon:Icon(
+                isLiked ? Icons.favorite : Icons.favorite_border,
+                color: isLiked ? Colors.red : Colors.grey,
+                size:30,
+                ),
+              ),
+                Text(
+                  "$likesCount Likes", style: const TextStyle(fontSize:18, fontWeight: FontWeight.bold)
+                )
+              ],
+            ),
+            const SizedBox(height: 30),
+
+            OutlinedButton(
+              onPressed: resetProfile,
+              child:const Text("Reset to Default"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
