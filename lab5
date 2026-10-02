@@ -45,14 +45,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       ),
       body: Column(
         children: [
-          // 1. The Scrollable Content Area (Prevents RenderFlex Overflow)
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
-                  // 2. STACK: Cover Image & Floating Bookmark Badge
                   Stack(
                     children: [
                       Container(
@@ -83,7 +81,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 3. ROW: Product Title & Price Alignment
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +100,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                         const SizedBox(height: 10),
 
-                        // ROW: Star Rating
                         Row(
                           children: const [
                             Icon(Icons.star, color: Colors.amber, size: 20),
@@ -117,7 +113,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                         const SizedBox(height: 20),
 
-                        // 4. WRAP: Dynamic Category Badges
                         Wrap(
                           spacing: 10,
                           runSpacing: 10,
@@ -148,7 +143,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
 
-          // 5. STICKY ACTION BAR: Bottom Add to Cart Button
           Container(
             padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
@@ -185,7 +179,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  // Helper function to keep the Wrap widget code clean
   Widget _buildBadge(String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
