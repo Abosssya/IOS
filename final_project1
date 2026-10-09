@@ -1,0 +1,447 @@
+// main.dart
+import 'package:flutter/material.dart';
+import 'screens/dashboard_screen.dart';
+
+void main() {
+  runApp(const RatioSenseApp());
+}
+
+class RatioSenseApp extends StatelessWidget {
+  const RatioSenseApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'RatioSense',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: const Color(0xFF1E3A8A),
+        scaffoldBackgroundColor: Colors.grey[50],
+      ),
+      home: const DashboardScreen(),
+    );
+  }
+}
+
+// dashboard_screen.dart
+import 'package:flutter/material.dart';
+import 'analysis_detail_screen.dart';
+
+class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("RatioSense Dashboard", style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF1E3A8A),
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Financial Models",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.upload_file),
+                    label: const Text("Upload Statements"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: Colors.blueAccent,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+
+            const Text(
+              "Active Portfolio",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            ),
+            const SizedBox(height: 12),
+
+            // DEFAULT COMPANY CARD
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(16),
+                leading: CircleAvatar(
+                  backgroundColor: Colors.blue[100],
+                  child: Icon(Icons.business, color: Colors.blue[800]),
+                ),
+                title: const Text("Microsoft Corp. (MSFT)", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                subtitle: Text("Software & Cloud • Default Data", style: TextStyle(color: Colors.grey[600])),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AnalysisDetailScreen(
+                        companyName: "Microsoft Corp.",
+                        healthScore: "AAA",
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+// analysis_detail_screen.dart
+import 'package:flutter/material.dart';
+import '../widgets/metric_card.dart';
+
+class AnalysisDetailScreen extends StatefulWidget {
+  final String companyName;
+  final String healthScore;
+
+  const AnalysisDetailScreen({
+    super.key,
+    required this.companyName,
+    required this.healthScore,
+  });
+
+  @override
+  State<AnalysisDetailScreen> createState() => _AnalysisDetailScreenState();
+}
+
+class _AnalysisDetailScreenState extends State<AnalysisDetailScreen> {
+  int selectedTabIndex = 0;
+
+  // 1. Calculator State Variables
+  String selectedRatio = "Current Ratio";
+  String _computationResult = "---";
+
+  // We need 3 controllers because Quick Ratio requires 3 inputs
+  final TextEditingController _input1Controller = TextEditingController();
+  final TextEditingController _input2Controller = TextEditingController();
+  final TextEditingController _input3Controller = TextEditingController();
+
+  final List<String> ratioOptions = [
+    'Current Ratio',
+    'Quick Ratio',
+    'Debt to Equity',
+    'Times Interest Earned',
+    'Inventory Turnover'
+  ];
+
+  void switchTab(int index) {
+    setState(() {
+      selectedTabIndex = index;
+    });
+  }
+
+  // 2. The Core Mathematical Engine
+  void computeRatio() {
+    double val1 = double.tryParse(_input1Controller.text) ?? 0.0;
+    double val2 = double.tryParse(_input2Controller.text) ?? 0.0;
+    double val3 = double.tryParse(_input3Controller.text) ?? 0.0;
+
+    setState(() {
+      if (selectedRatio == "Current Ratio") {
+        if (val2 == 0) { _computationResult = "Error"; return; }
+        _computationResult = "${(val1 / val2).toStringAsFixed(2)}x";
+
+      } else if (selectedRatio == "Quick Ratio") {
+        if (val3 == 0) { _computationResult = "Error"; return; }
+        _computationResult = "${((val1 - val2) / val3).toStringAsFixed(2)}x";
+
+      } else if (selectedRatio == "Debt to Equity") {
+        if (val2 == 0) { _computationResult = "Error"; return; }
+        _computationResult = "${(val1 / val2).toStringAsFixed(2)}x";
+
+      } else if (selectedRatio == "Times Interest Earned") {
+        if (val2 == 0) { _computationResult = "Error"; return; }
+        _computationResult = "${(val1 / val2).toStringAsFixed(2)}x";
+
+      } else if (selectedRatio == "Inventory Turnover") {
+        if (val2 == 0) { _computationResult = "Error"; return; }
+        _computationResult = "${(val1 / val2).toStringAsFixed(2)}x";
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("Analysis Report"),
+        backgroundColor: const Color(0xFF1E3A8A),
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          // BANNER
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                height: 140,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF1E3A8A),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.companyName, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
+                      const SizedBox(height: 5),
+                      const Text("FY 2026 Default Financials", style: TextStyle(color: Colors.white70, fontSize: 14)),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: -25,
+                right: 30,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.greenAccent[400],
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 4))],
+                  ),
+                  child: Text("Health: ${widget.healthScore}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 40),
+
+          // TABS
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildTabButton("Default Ratios", 0),
+                _buildTabButton("Custom Calculator", 1),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: _buildTabContent(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabButton(String title, int index) {
+    bool isActive = selectedTabIndex == index;
+    return GestureDetector(
+      onTap: () => switchTab(index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isActive ? Colors.blueAccent : Colors.grey[200],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          title,
+          style: TextStyle(fontWeight: FontWeight.bold, color: isActive ? Colors.white : Colors.black54),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabContent() {
+    if (selectedTabIndex == 0) {
+      // TAB 1: THE 5 DEFAULT RATIOS
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Text("Core Financial Indicators", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          SizedBox(height: 15),
+          MetricCard(title: "1. Current Ratio", value: "2.4x", interpretation: "Current Assets ÷ Current Liabilities"),
+          MetricCard(title: "2. Quick Ratio (Acid Test)", value: "2.1x", interpretation: "(Current Assets - Inventory) ÷ Current Liabilities"),
+          MetricCard(title: "3. Debt to Equity", value: "0.28x", interpretation: "Total Debt ÷ Shareholders' Equity"),
+          MetricCard(title: "4. Times Interest Earned", value: "35.2x", interpretation: "Operating Income ÷ Interest Expense"),
+          MetricCard(title: "5. Inventory Turnover", value: "8.5x", interpretation: "COGS ÷ Average Inventory"),
+        ],
+      );
+    } else {
+      // TAB 2: INTERACTIVE CALCULATOR
+      // Determine dynamic labels based on dropdown selection
+      String label1 = ""; String label2 = ""; String label3 = "";
+      bool showThirdInput = false;
+
+      if (selectedRatio == "Current Ratio") {
+        label1 = "Current Assets"; label2 = "Current Liabilities";
+      } else if (selectedRatio == "Quick Ratio") {
+        label1 = "Current Assets"; label2 = "Inventory"; label3 = "Current Liabilities";
+        showThirdInput = true;
+      } else if (selectedRatio == "Debt to Equity") {
+        label1 = "Total Debt"; label2 = "Total Shareholders' Equity";
+      } else if (selectedRatio == "Times Interest Earned") {
+        label1 = "Operating Income"; label2 = "Interest Expense";
+      } else if (selectedRatio == "Inventory Turnover") {
+        label1 = "Cost of Goods Sold (COGS)"; label2 = "Average Inventory";
+      }
+
+      return Card(
+        color: Colors.blue[50],
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Compute Ratio", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 15),
+
+              DropdownButton<String>(
+                value: selectedRatio,
+                isExpanded: true,
+                items: ratioOptions.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedRatio = newValue!;
+                    _computationResult = "---";
+                    _input1Controller.clear();
+                    _input2Controller.clear();
+                    _input3Controller.clear();
+                  });
+                },
+              ),
+              const SizedBox(height: 15),
+
+              TextField(
+                controller: _input1Controller,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: label1, border: const OutlineInputBorder(), filled: true, fillColor: Colors.white),
+              ),
+              const SizedBox(height: 10),
+
+              TextField(
+                controller: _input2Controller,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: label2, border: const OutlineInputBorder(), filled: true, fillColor: Colors.white),
+              ),
+              const SizedBox(height: 10),
+
+              // Only renders the 3rd input if Quick Ratio is selected
+              if (showThirdInput)
+                TextField(
+                  controller: _input3Controller,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: label3, border: const OutlineInputBorder(), filled: true, fillColor: Colors.white),
+                ),
+
+              if (showThirdInput) const SizedBox(height: 10),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: computeRatio,
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E3A8A), padding: const EdgeInsets.symmetric(vertical: 14)),
+                  child: const Text("Compute", style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              Center(
+                child: Text(
+                  "Result: $_computationResult",
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.green),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+}
+
+
+// metric_card.dart
+import 'package:flutter/material.dart';
+
+class MetricCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final String interpretation;
+
+  const MetricCard({
+    super.key,
+    required this.title,
+    required this.value,
+    required this.interpretation,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: Colors.blue[50],
+      margin: const EdgeInsets.only(bottom: 15),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: Colors.blue.withOpacity(0.2)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  const SizedBox(height: 4),
+                  Text(interpretation, style: TextStyle(color: Colors.grey[700], fontSize: 12)),
+                ],
+              ),
+            ),
+            Text(
+              value,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color(0xFF1E3A8A)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
