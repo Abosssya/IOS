@@ -1,45 +1,45 @@
-# RatioSense 📊
+RatioSense 📊
 
-**Institutional-grade financial analysis and automated ratio intelligence on mobile.**
+Institutional-grade financial analysis and automated ratio intelligence on mobile.
 
 ---
 
-**RatioSense** bridges the gap between raw corporate accounting data and strategic financial evaluation. Traditional financial statement analysis requires tedious manual input, reconciliation of non-standard line item naming conventions, and spreadsheet-bound models.
+RatioSense bridges the gap between raw corporate accounting data and strategic financial evaluation. Traditional financial statement analysis requires tedious manual input, reconciliation of non-standard line item naming conventions, and spreadsheet-bound models.
 
 RatioSense automates corporate health monitoring on mobile devices by processing the three primary financial statements:
-* **Balance Sheet**
-* **Income Statement**
-* **Cash Flow Statement**
+1)Balance Sheet
+2)Income Statement
+3)Cash Flow Statement
 
 The platform standardizes disparate accounting nomenclatures (e.g., mapping variations like "Net Sales" to standard "Revenue") and delivers real-time liquidity, solvency, profitability, and operational efficiency analytics with zero spreadsheet friction.
 
 ---
 
-## Milestone 1 Core Features (MVP)
+Milestone 1 Core Features (MVP)
 
-* **Discovery & Active Portfolio Feed (`DashboardScreen`)**
-  * Modular discovery feed tracking monitored enterprises (featuring Microsoft Corp. as the default asset).
-  * Standardized visual health indicators (AAA to BB rating tiers).
-  * Clear entry point for future financial statement upload pipelines.
-* **Institutional Detail View (`AnalysisDetailScreen`)**
-  * Custom `Stack` banner layout with dynamic curved geometry and an overlaid, floating operational health pill (`Positioned`).
-  * Interactive tab navigation switching between **Default Ratios** and the **Custom Calculator**.
-* **Real-Time Dynamic Financial Calculator**
-  * Built using `StatefulWidget` and reactive `setState()` state updates.
-  * Formula routing engine across five core financial statement metrics.
-  * **Declarative Conditional Rendering:** Dynamically injects a 3rd input controller exclusively for three-variable formulas (Quick Ratio) while maintaining a clean two-variable interface for standard ratios.
-  * **Defensive Arithmetic Engine:** Handles invalid entries via `double.tryParse` fallbacks and enforces division-by-zero safeguards to prevent runtime crashes.
-* **Adaptive, Zero-Overflow Layout**
-  * Combines `Expanded`, `SingleChildScrollView`, and adaptive margins to ensure zero `RenderFlex` overflow errors across small and large screens.
+1)Discovery & Active Portfolio Feed (`DashboardScreen`)
+   Modular discovery feed tracking monitored enterprises (featuring Microsoft Corp. as the default asset).
+   Standardized visual health indicators (AAA to BB rating tiers).
+   Clear entry point for future financial statement upload pipelines.
+2)Institutional Detail View (`AnalysisDetailScreen`)
+   Custom `Stack` banner layout with dynamic curved geometry and an overlaid, floating operational health pill (`Positioned`).
+   Interactive tab navigation switching between Default Ratios and the Custom Calculator.
+3)Real-Time Dynamic Financial Calculator
+   Built using `StatefulWidget` and reactive `setState()` state updates.
+   Formula routing engine across five core financial statement metrics.
+   Declarative Conditional Rendering: Dynamically injects a 3rd input controller exclusively for three-variable formulas (Quick Ratio) while maintaining a clean two-variable interface for standard ratios.
+   Defensive Arithmetic Engine: Handles invalid entries via `double.tryParse` fallbacks and enforces division-by-zero safeguards to prevent runtime crashes.
+4)Adaptive, Zero-Overflow Layout
+   Combines `Expanded`, `SingleChildScrollView`, and adaptive margins to ensure zero `RenderFlex` overflow errors across small and large screens.
 
 ---
 
-## Supported Financial Formulations
+Supported Financial Formulations
 
-| Ratio | Mathematical Formula | Analytical Significance |
-| :--- | :--- | :--- |
-| **Current Ratio** | $\frac{\text{Current Assets}}{\text{Current Liabilities}}$ | Evaluates short-term liquidity and capacity to cover immediate obligations. |
-| **Quick Ratio (Acid Test)** | $\frac{\text{Current Assets} - \text{Inventory}}{\text{Current Liabilities}}$ | Measures strict liquidity by excluding inventory from current assets. |
-| **Debt-to-Equity** | $\frac{\text{Total Debt}}{\text{Total Shareholders' Equity}}$ | Assesses capital structure, financial leverage, and long-term solvency risk. |
-| **Times Interest Earned** | $\frac{\text{Operating Income (EBIT)}}{\text{Interest Expense}}$ | Gauges debt service safety margin and debt maintenance capacity. |
-| **Inventory Turnover** | $\frac{\text{Cost of Goods Sold (COGS)}}{\text{Average Inventory}}$ | Measures working capital efficiency and inventory management velocity. |
+Ratio  Mathematical Formula  Analytical Significance 
+   
+ Current Ratio  {Current Assets}}{\{Current Liabilities}}  Evaluates short-term liquidity and capacity to cover immediate obligations. 
+ Quick Ratio (Acid Test)  {Current Assets} - \{Inventory}}{\{Current Liabilities}}  Measures strict liquidity by excluding inventory from current assets. 
+ Debt-to-Equity  {Total Debt}}{\{Total Shareholders' Equity}}  Assesses capital structure, financial leverage, and long-term solvency risk. 
+ Times Interest Earned  {Operating Income (EBIT)}}{\{Interest Expense}}  Gauges debt service safety margin and debt maintenance capacity. 
+ Inventory Turnover  {Cost of Goods Sold (COGS)}}{\{Average Inventory}}  Measures working capital efficiency and inventory management velocity. 
