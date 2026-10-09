@@ -1,0 +1,301 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const RegistrationApp());
+}
+
+class RegistrationApp extends StatelessWidget {
+  const RegistrationApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Lab 6: Registration & Validation',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1E3A8A)),
+        useMaterial3: true,
+      ),
+      home: const RegistrationScreen(),
+    );
+  }
+}
+
+class RegistrationScreen extends StatefulWidget {
+  const RegistrationScreen({super.key});
+
+  @override
+  State<RegistrationScreen> createState() => _RegistrationScreenState();
+}
+
+class _RegistrationScreenState extends State<RegistrationScreen> {
+  // 1. FORM KEY: Controls validation of all FormField children
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  // 2. TEXT CONTROLLERS: Capture user input and compare passwords
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  // 3. INTERACTIVE STATE VARIABLES
+  bool _acceptedTerms = false;
+  bool _termsError = false;
+  String _selectedRole = 'Student';
+  final List<String> _roles = ['Student', 'Teacher', 'Developer'];
+
+  // Toggle password visibility
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  // 4. SUBMISSION LOGIC
+  void _submitForm() {
+    final bool isFormValid = _formKey.currentState!.validate();
+
+    // Checkbox validation
+    setState(() {
+      _termsError = !_acceptedTerms;
+    });
+
+    if (isFormValid && _acceptedTerms) {
+      // Print registered values to debug terminal
+      debugPrint('====================================');
+      debugPrint('USER REGISTRATION SUCCESSFUL');
+      debugPrint('Full Name : ${_nameController.text.trim()}');
+      debugPrint('Email     : ${_emailController.text.trim()}');
+      debugPrint('Role      : $_selectedRole');
+      debugPrint('Terms Accepted: $_acceptedTerms');
+      debugPrint('====================================');
+
+      // Success feedback via SnackBar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Registration successful for ${_nameController.text.trim()}!'),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    } else if (!_acceptedTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please accept the Terms and Conditions to proceed.'),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('User Registration', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF1E3A8A),
+        foregroundColor: Colors.white,
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Create an Account',
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Color(0xFF1E3A8A)),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Fill in the details below to complete your profile.',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                const SizedBox(height: 24),
+
+                // FULL NAME FIELD
+                TextFormField(
+                  controller: _nameController,
+                  keyboardType: TextInputType.name,
+                  decoration: const InputDecoration(
+                    labelText: 'Full Name',
+                    prefixIcon: Icon(Icons.person_outline),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Full Name is required and cannot be empty.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // EMAIL FIELD
+                TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    labelText: 'Email Address',
+                    hintText: 'name@narxoz.kz',
+                    prefixIcon: Icon(Icons.email_outlined),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Email is required.';
+                    }
+                    if (!value.contains('@') || !value.contains('.')) {
+                      return 'Email must contain both "@" and "." (e.g. name@narxoz.kz).';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // USER ROLE DROPDOWN
+                DropdownButtonFormField<String>(
+                  value: _selectedRole,
+                  decoration: const InputDecoration(
+                    labelText: 'User Role',
+                    prefixIcon: Icon(Icons.badge_outlined),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _roles.map((role) {
+                    return DropdownMenuItem<String>(
+                      value: role,
+                      child: Text(role),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        _selectedRole = value;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // PASSWORD FIELD
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: _obscurePassword,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Password is required.';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters long.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // CONFIRM PASSWORD FIELD
+                TextFormField(
+                  controller: _confirmPasswordController,
+                  obscureText: _obscureConfirmPassword,
+                  decoration: InputDecoration(
+                    labelText: 'Confirm Password',
+                    prefixIcon: const Icon(Icons.lock_reset_outlined),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () {
+                        setState(() {
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                        });
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password.';
+                    }
+                    if (value != _passwordController.text) {
+                      return 'Passwords do not match.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                // CHECKBOX: TERMS AND CONDITIONS
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: const Text(
+                    'I accept the Terms and Conditions',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  value: _acceptedTerms,
+                  onChanged: (value) {
+                    setState(() {
+                      _acceptedTerms = value ?? false;
+                      if (_acceptedTerms) {
+                        _termsError = false;
+                      }
+                    });
+                  },
+                ),
+                if (_termsError)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 12.0, bottom: 8.0),
+                    child: Text(
+                      'You must accept the terms before registering.',
+                      style: TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                  ),
+
+                const SizedBox(height: 20),
+
+                // SUBMIT BUTTON
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1E3A8A),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    'Register',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
